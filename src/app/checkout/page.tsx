@@ -41,7 +41,8 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/orders", {
+      // 1. CREATE ORDER
+      const orderRes = await fetch("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -57,17 +58,39 @@ export default function CheckoutPage() {
         })
       });
 
-      const data = await res.json();
+      const order = await orderRes.json();
 
-      if (!res.ok || !data.success) {
-        throw new Error("Order failed");
+      if (!orderRes.ok || !order?.id) {
+        throw new Error("Create order failed");
       }
 
+      // 2. CREATE PAYMENT
+      const paymentRes = await fetch("/api/payment/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          orderId: order.id,
+          amount: total,
+          provider: "vnpay"
+        })
+      });
+
+      const payment = await paymentRes.json();
+
+      if (!paymentRes.ok || !payment?.redirectUrl) {
+        throw new Error("Create payment failed");
+      }
+
+      // 3. CLEAR CART BEFORE REDIRECT
       clearCart();
-      router.push("/dat-hang-thanh-cong");
+
+      // 4. REDIRECT TO PAYMENT GATEWAY
+      window.location.href = payment.redirectUrl;
     } catch (err) {
-      alert("Đặt hàng thất bại, vui lòng thử lại");
       console.error(err);
+      alert("Đặt hàng thất bại, vui lòng thử lại");
     } finally {
       setLoading(false);
     }
