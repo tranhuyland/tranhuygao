@@ -2,46 +2,52 @@ import * as React from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import { Container } from "@/components/ui/container";
+import Container from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 import { getProductBySlug } from "@/lib/products/product-service";
 
 interface ProductDetailPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({
-  params
+  params,
 }: ProductDetailPageProps) {
-  const product = await getProductBySlug(params.slug);
+  const { slug } = await params;
+
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     return {
-      title: "Không tìm thấy sản phẩm"
+      title: "Không tìm thấy sản phẩm",
     };
   }
 
   return {
     title: product.name,
-    description: product.shortDescription
+    description: product.shortDescription,
   };
 }
 
 export default async function ProductDetailPage({
-  params
+  params,
 }: ProductDetailPageProps) {
-  const product = await getProductBySlug(params.slug);
+  const { slug } = await params;
+
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
   const hasSale =
-    product.salePrice && product.salePrice < product.price;
+    product.salePrice !== null &&
+    product.salePrice !== undefined &&
+    product.salePrice < product.price;
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("vi-VN").format(price) + "₫";
@@ -50,7 +56,6 @@ export default async function ProductDetailPage({
     <main className="py-10">
       <Container>
         <div className="grid gap-10 md:grid-cols-2">
-          {/* IMAGE */}
           <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-100">
             <Image
               src={product.images[0] || "/placeholder.jpg"}
@@ -60,12 +65,9 @@ export default async function ProductDetailPage({
             />
           </div>
 
-          {/* INFO */}
           <div className="space-y-4">
             <div className="flex gap-2">
-              {product.featured && (
-                <Badge>Best Seller</Badge>
-              )}
+              {product.featured && <Badge>Best Seller</Badge>}
 
               {hasSale && (
                 <Badge variant="destructive">
@@ -82,12 +84,9 @@ export default async function ProductDetailPage({
               {product.description}
             </p>
 
-            {/* PRICE */}
             <div className="space-y-1">
               <div className="text-xl font-semibold">
-                {formatPrice(
-                  product.salePrice ?? product.price
-                )}
+                {formatPrice(product.salePrice ?? product.price)}
               </div>
 
               {hasSale && (
@@ -97,12 +96,10 @@ export default async function ProductDetailPage({
               )}
             </div>
 
-            {/* STOCK */}
             <p className="text-sm text-gray-500">
               Còn lại: {product.stock} {product.unit}
             </p>
 
-            {/* ACTION */}
             <div className="pt-4">
               <Button className="w-full" size="lg">
                 Thêm vào giỏ hàng
