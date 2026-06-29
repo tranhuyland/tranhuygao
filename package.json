@@ -12,7 +12,8 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "postinstall": "prisma generate"
   },
 
   "dependencies": {
@@ -31,7 +32,9 @@
     "react-hot-toast": "^2.5.2",
     "swiper": "^11.2.6",
     "tailwind-merge": "^3.3.0",
-    "zod": "^3.24.4"
+    "zod": "^3.24.4",
+
+    "@prisma/client": "^6.0.0"
   },
 
   "devDependencies": {
@@ -44,6 +47,7 @@
     "postcss": "^8.5.3",
     "prettier": "^3.5.3",
     "tailwindcss": "^4.1.7",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "prisma": "^6.0.0"
   }
 }
