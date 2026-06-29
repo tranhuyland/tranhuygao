@@ -1,13 +1,11 @@
-import * as React from "react";
-
-import { Container } from "@/components/ui/container";
-import { ProductGrid } from "@/components/features/products/product-grid";
-
+import type { Metadata } from "next";
+import Container from "@/components/ui/container";
+import ProductGrid from "@/components/features/products/product-grid";
 import { getProducts } from "@/lib/products/product-service";
 
 export const dynamic = "force-static";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Sản phẩm gạo sạch",
   description:
     "Danh sách các loại gạo sạch ST25, Jasmine, Bắc Hương chất lượng cao."
