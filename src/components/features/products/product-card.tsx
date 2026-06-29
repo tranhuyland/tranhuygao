@@ -1,7 +1,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-
+import { useCart } from "@/lib/cart";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,20 @@ export function ProductCard({ product }: ProductCardProps) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN").format(price) + "₫";
   };
+const { addItem } = useCart();
 
+<Button
+  className="w-full"
+  size="sm"
+  onClick={() =>
+    addItem({
+      product,
+      quantity: 1
+    })
+  }
+>
+  Thêm vào giỏ
+</Button>
   return (
     <Card className="group overflow-hidden transition-all hover:shadow-md">
       {/* IMAGE */}
