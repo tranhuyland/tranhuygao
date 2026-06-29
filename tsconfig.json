@@ -1,114 +1,51 @@
-```json
 {
   "compilerOptions": {
-    /* =========================
-     * JavaScript & Runtime
-     * ========================= */
     "target": "ES2022",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ES2022"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
 
-    /* =========================
-     * Module
-     * ========================= */
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "moduleDetection": "force",
-    "resolveJsonModule": true,
-    "allowJs": false,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
 
-    /* =========================
-     * React / JSX
-     * ========================= */
     "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
 
-    /* =========================
-     * Strict TypeScript
-     * ========================= */
     "strict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitOverride": true,
-    "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "useUnknownInCatchVariables": true,
 
-    /* =========================
-     * Imports
-     * ========================= */
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": true,
     "forceConsistentCasingInFileNames": true,
 
-    /* =========================
-     * Performance
-     * ========================= */
+    "incremental": true,
+    "noEmit": true,
     "skipLibCheck": true,
 
-    /* =========================
-     * Path Alias
-     * ========================= */
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/components/*": [
-        "./src/components/*"
-      ],
-      "@/features/*": [
-        "./src/features/*"
-      ],
-      "@/hooks/*": [
-        "./src/hooks/*"
-      ],
-      "@/lib/*": [
-        "./src/lib/*"
-      ],
-      "@/services/*": [
-        "./src/services/*"
-      ],
-      "@/types/*": [
-        "./src/types/*"
-      ],
-      "@/config/*": [
-        "./src/config/*"
-      ],
-      "@/constants/*": [
-        "./src/constants/*"
-      ],
-      "@/styles/*": [
-        "./src/styles/*"
-      ]
-    }
+      "@/*": ["./src/*"]
+    },
+
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
 
   "include": [
     "next-env.d.ts",
-    "src/**/*.ts",
-    "src/**/*.tsx",
+    "**/*.ts",
+    "**/*.tsx",
     ".next/types/**/*.ts"
   ],
 
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
-```
