@@ -3,7 +3,7 @@ import * as React from "react";
 import { Container } from "@/components/ui/container";
 import { ProductGrid } from "@/components/features/products/product-grid";
 
-import { getProducts } from "@/lib/products";
+import { getProducts } from "@/lib/products/product-service";
 
 export const dynamic = "force-static";
 
