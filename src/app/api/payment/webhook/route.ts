@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
+
 import { updatePaymentStatus } from "@/lib/db/payment-repository";
 import { updateOrderStatusInDB } from "@/lib/db/order-repository";
 
-/**
- * PAYMENT WEBHOOK (VNPay / MoMo / Stripe)
- * - verify signature (simplified here)
- * - update payment status
- * - update order status
- */
+import { verifyPaymentSignature } from "@/lib/payment/payment-security";
+
+const PAYMENT_SECRET = process.env.PAYMENT_SECRET || "demo_secret";
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -16,30 +15,38 @@ export async function POST(req: Request) {
       paymentId,
       orderId,
       status,
-      amount
+      amount,
+      signature
     } = body;
 
-    // ⚠️ REAL PROJECT: verify signature here
-    // (VNPay / MoMo / Stripe signature validation)
+    // 1. VERIFY SIGNATURE (CRITICAL SECURITY STEP)
+    const isValid = verifyPaymentSignature({
+      data: {
+        paymentId,
+        orderId,
+        status,
+        amount
+      },
+      signature,
+      secret: PAYMENT_SECRET
+    });
 
-    if (!paymentId || !orderId) {
+    if (!isValid) {
       return NextResponse.json(
-        { error: "Invalid webhook payload" },
-        { status: 400 }
+        { error: "Invalid signature" },
+        { status: 401 }
       );
     }
 
-    // 1. Update payment status
+    // 2. UPDATE PAYMENT
     await updatePaymentStatus(paymentId, status);
 
-    // 2. If payment success → update order
+    // 3. UPDATE ORDER
     if (status === "paid") {
       await updateOrderStatusInDB(orderId, "processing");
     }
 
-    return NextResponse.json({
-      success: true
-    });
+    return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Webhook error:", err);
 
