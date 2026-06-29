@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-import { getProductBySlug } from "@/lib/products";
+import { getProductBySlug } from "@/lib/products/product-service";
 
 interface ProductDetailPageProps {
   params: {
