@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Viewport } from "next";
 import { defaultMetadata } from "@/config/site";
+import { CartProvider } from "@/lib/cart";
 
 export const metadata = defaultMetadata;
 
@@ -10,14 +11,17 @@ export const viewport: Viewport = {
   initialScale: 1
 };
 
+
 export default function RootLayout({
-  children,
-}: Readonly<{
+  children
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="vi" suppressHydrationWarning>
-      <body>{children}</body>
+    <html lang="vi">
+      <body>
+        <CartProvider>{children}</CartProvider>
+      </body>
     </html>
   );
 }
