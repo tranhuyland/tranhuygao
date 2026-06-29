@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,7 +7,6 @@ import { useCart } from "@/lib/cart";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 import type { Product } from "@/types/product";
 
@@ -14,27 +15,15 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const hasSale = Boolean(
-    product.salePrice && product.salePrice < product.price
-  );
+  const { addItem } = useCart();
+
+  const hasSale =
+    Boolean(product.salePrice && product.salePrice < product.price);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN").format(price) + "₫";
   };
-const { addItem } = useCart();
 
-<Button
-  className="w-full"
-  size="sm"
-  onClick={() =>
-    addItem({
-      product,
-      quantity: 1
-    })
-  }
->
-  Thêm vào giỏ
-</Button>
   return (
     <Card className="group overflow-hidden transition-all hover:shadow-md">
       {/* IMAGE */}
@@ -48,7 +37,6 @@ const { addItem } = useCart();
             sizes="(max-width: 768px) 50vw, 25vw"
           />
 
-          {/* BADGES */}
           <div className="absolute left-2 top-2 flex gap-2">
             {product.featured && (
               <Badge variant="default">Nổi bật</Badge>
@@ -88,8 +76,17 @@ const { addItem } = useCart();
 
         {/* ACTION */}
         <div className="pt-2">
-          <Button className="w-full" size="sm">
-            Xem chi tiết
+          <Button
+            className="w-full"
+            size="sm"
+            onClick={() =>
+              addItem({
+                product,
+                quantity: 1
+              })
+            }
+          >
+            Thêm vào giỏ
           </Button>
         </div>
       </div>
