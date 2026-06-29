@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-
+import { sendOrderConfirmationEmail } from "@/lib/notifications/email-service";
 import { updatePaymentStatus } from "@/lib/db/payment-repository";
 import { updateOrderStatusInDB } from "@/lib/db/order-repository";
 
@@ -41,10 +41,17 @@ export async function POST(req: Request) {
     // 2. UPDATE PAYMENT
     await updatePaymentStatus(paymentId, status);
 
-    // 3. UPDATE ORDER
     if (status === "paid") {
-      await updateOrderStatusInDB(orderId, "processing");
-    }
+  await updateOrderStatusInDB(orderId, "processing");
+
+  // 📧 SEND EMAIL AFTER PAYMENT SUCCESS
+  await sendOrderConfirmationEmail({
+    to: body.customerEmail || "customer@demo.com",
+    orderId,
+    customerName: body.customerName || "Khách hàng",
+    total: amount
+  });
+}
 
     return NextResponse.json({ success: true });
   } catch (err) {
