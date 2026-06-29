@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+/* ========================================
+   Theme
+======================================== */
+
+:root {
+  --background: #ffffff;
+  --foreground: #111827;
+
+  --primary: #0f766e;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f5f5f5;
+
+  --border: #e5e7eb;
+
+  --radius: 12px;
+
+  --container: 1280px;
+}
+
+/* ========================================
+   Reset
+======================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--background);
+
+  color: var(--foreground);
+
+  font-family:
+    Inter,
+    system-ui,
+    sans-serif;
+
+  text-rendering: optimizeLegibility;
+
+  -webkit-font-smoothing: antialiased;
+
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+::selection {
+  background: var(--primary);
+
+  color: white;
+}
+
+/* ========================================
+   Utilities
+======================================== */
+
+.container {
+  width: min(100% - 32px, var(--container));
+
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: 64px;
+}
+
+.shadow-soft {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, .04);
+}
+
+.rounded {
+  border-radius: var(--radius);
+}
+
+.border-default {
+  border: 1px solid var(--border);
+}
