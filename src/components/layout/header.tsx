@@ -8,8 +8,14 @@ import { Separator } from "@/components/ui/separator";
 import { navigation } from "@/config/navigation";
 import { cn } from "@/lib/utils";
 
+import { useCart } from "@/lib/cart";
+import { calculateCartCount } from "@/lib/cart";
+
 export function Header() {
   const [open, setOpen] = React.useState(false);
+
+  const { state } = useCart();
+  const cartCount = calculateCartCount(state.items);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
@@ -40,6 +46,19 @@ export function Header() {
 
           {/* RIGHT ACTIONS */}
           <div className="flex items-center gap-2">
+            {/* CART */}
+            <Link href="/gio-hang">
+              <Button variant="outline" className="relative">
+                Giỏ hàng
+
+                {cartCount > 0 && (
+                  <span className="ml-2 inline-flex items-center justify-center rounded-full bg-red-600 px-2 py-0.5 text-xs text-white">
+                    {cartCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
+
             <Button variant="outline" className="hidden md:inline-flex">
               Liên hệ
             </Button>
@@ -78,6 +97,18 @@ export function Header() {
               ))}
 
               <Separator />
+
+              {/* CART MOBILE */}
+              <Link href="/gio-hang" onClick={() => setOpen(false)}>
+                <Button variant="outline" className="w-full">
+                  Giỏ hàng{" "}
+                  {cartCount > 0 && (
+                    <span className="ml-2 text-xs text-red-600">
+                      ({cartCount})
+                    </span>
+                  )}
+                </Button>
+              </Link>
 
               <Button variant="outline" className="w-full">
                 Liên hệ
