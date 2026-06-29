@@ -15,18 +15,42 @@ export async function updateOrderStatus(
   id: string,
   status: "pending" | "processing" | "completed" | "cancelled"
 ) {
-  return updateOrderStatusInDB(id, status);
+  if (!id) {
+    throw new Error("Order ID is required");
+  }
+
+  const allowedStatuses = [
+    "pending",
+    "processing",
+    "completed",
+    "cancelled"
+  ] as const;
+
+  if (!allowedStatuses.includes(status)) {
+    throw new Error("Invalid status value");
+  }
+
+  const updated = await updateOrderStatusInDB(id, status);
+
+  if (!updated) {
+    throw new Error("Order not found or update failed");
+  }
+
+  return updated;
 }
+
 /**
  * CREATE ORDER (service layer)
- * - business logic
- * - delegate persistence to repository
  */
 export async function createOrder(params: {
   customer: CustomerInfo;
   items: Order["items"];
   total: number;
 }): Promise<Order> {
+  if (!params?.customer || !params.items?.length) {
+    throw new Error("Invalid order data");
+  }
+
   const newOrder: Order = {
     id: generateOrderId(),
     customer: params.customer,
@@ -36,7 +60,6 @@ export async function createOrder(params: {
     createdAt: formatOrderDate()
   };
 
-  // persist via DB layer
   await createOrderInDB(newOrder);
 
   return newOrder;
@@ -46,11 +69,13 @@ export async function createOrder(params: {
  * GET ORDER BY ID
  */
 export async function getOrderById(id: string): Promise<Order | null> {
+  if (!id) return null;
+
   return await getOrderByIdFromDB(id);
 }
 
 /**
- * GET ALL ORDERS (admin use)
+ * GET ALL ORDERS
  */
 export async function getOrders(): Promise<Order[]> {
   return await getOrdersFromDB();
