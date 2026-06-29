@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { sendOrderConfirmationEmail } from "@/lib/notifications/email-service";
 import { updatePaymentStatus } from "@/lib/db/payment-repository";
 import { updateOrderStatusInDB } from "@/lib/db/order-repository";
-
+import { decreaseStock } from "@/lib/inventory/inventory-service";
 import { verifyPaymentSignature } from "@/lib/payment/payment-security";
 
 const PAYMENT_SECRET = process.env.PAYMENT_SECRET || "demo_secret";
@@ -42,9 +42,13 @@ export async function POST(req: Request) {
     await updatePaymentStatus(paymentId, status);
 
     if (status === "paid") {
+  // 1. update order
   await updateOrderStatusInDB(orderId, "processing");
 
-  // 📧 SEND EMAIL AFTER PAYMENT SUCCESS
+  // 2. decrease stock (QUAN TRỌNG)
+  await decreaseStock(body.items || []);
+
+  // 3. send email
   await sendOrderConfirmationEmail({
     to: body.customerEmail || "customer@demo.com",
     orderId,
