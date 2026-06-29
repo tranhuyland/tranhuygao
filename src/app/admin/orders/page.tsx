@@ -1,12 +1,42 @@
+"use client";
+
 import * as React from "react";
 
 import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 import { getOrdersFromDB } from "@/lib/db/order-repository";
 
-export default async function AdminOrdersPage() {
-  const orders = await getOrdersFromDB();
+export default function AdminOrdersPage() {
+  const [orders, setOrders] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    loadOrders();
+  }, []);
+
+  async function loadOrders() {
+    setLoading(true);
+    try {
+      const data = await getOrdersFromDB();
+      setOrders(data);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateStatus(id: string, status: string) {
+    await fetch(`/api/orders/${id}/status`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ status })
+    });
+
+    await loadOrders();
+  }
 
   return (
     <main className="py-10">
@@ -15,8 +45,14 @@ export default async function AdminOrdersPage() {
           Quản lý đơn hàng
         </h1>
 
+        {loading && (
+          <p className="text-gray-500 mb-4">
+            Đang tải dữ liệu...
+          </p>
+        )}
+
         <div className="space-y-4">
-          {orders.length === 0 && (
+          {orders.length === 0 && !loading && (
             <p className="text-gray-500">
               Chưa có đơn hàng nào
             </p>
@@ -25,7 +61,7 @@ export default async function AdminOrdersPage() {
           {orders.map((order) => (
             <div
               key={order.id}
-              className="rounded-xl border p-4 space-y-2"
+              className="rounded-xl border p-4 space-y-3"
             >
               {/* HEADER */}
               <div className="flex items-center justify-between">
@@ -39,7 +75,9 @@ export default async function AdminOrdersPage() {
                       ? "outline"
                       : order.status === "processing"
                       ? "default"
-                      : "secondary"
+                      : order.status === "completed"
+                      ? "secondary"
+                      : "destructive"
                   }
                 >
                   {order.status}
@@ -66,6 +104,38 @@ export default async function AdminOrdersPage() {
                     • {item.productName} x {item.quantity}
                   </div>
                 ))}
+              </div>
+
+              {/* ACTION BUTTONS */}
+              <div className="flex gap-2 pt-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() =>
+                    updateStatus(order.id, "processing")
+                  }
+                >
+                  Xử lý
+                </Button>
+
+                <Button
+                  size="sm"
+                  onClick={() =>
+                    updateStatus(order.id, "completed")
+                  }
+                >
+                  Hoàn thành
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() =>
+                    updateStatus(order.id, "cancelled")
+                  }
+                >
+                  Huỷ
+                </Button>
               </div>
             </div>
           ))}
