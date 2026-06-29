@@ -1,10 +1,16 @@
 import type { Order, CustomerInfo } from "./order-types";
 import { generateOrderId, formatOrderDate } from "./order-utils";
 
-let orders: Order[] = [];
+import {
+  createOrderInDB,
+  getOrderByIdFromDB,
+  getOrdersFromDB
+} from "@/lib/db/order-repository";
 
 /**
- * CREATE ORDER (mock DB)
+ * CREATE ORDER (service layer)
+ * - business logic
+ * - delegate persistence to repository
  */
 export async function createOrder(params: {
   customer: CustomerInfo;
@@ -20,7 +26,8 @@ export async function createOrder(params: {
     createdAt: formatOrderDate()
   };
 
-  orders.push(newOrder);
+  // persist via DB layer
+  await createOrderInDB(newOrder);
 
   return newOrder;
 }
@@ -28,13 +35,13 @@ export async function createOrder(params: {
 /**
  * GET ORDER BY ID
  */
-export async function getOrderById(id: string) {
-  return orders.find((o) => o.id === id) || null;
+export async function getOrderById(id: string): Promise<Order | null> {
+  return await getOrderByIdFromDB(id);
 }
 
 /**
  * GET ALL ORDERS (admin use)
  */
-export async function getOrders() {
-  return orders;
+export async function getOrders(): Promise<Order[]> {
+  return await getOrdersFromDB();
 }
