@@ -52,3 +52,13 @@ model OrderItem {
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
 }
+model Payment {
+  id        String   @id @default(cuid())
+  orderId   String
+  amount    Int
+  provider  String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+
+  order     Order @relation(fields: [orderId], references: [id])
+}
