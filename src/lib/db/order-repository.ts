@@ -1,6 +1,19 @@
 import { prisma } from "./prisma";
 import type { Order } from "@/lib/orders/order-types";
 
+
+/**
+ * UPDATE ORDER STATUS
+ */
+export async function updateOrderStatusInDB(
+  id: string,
+  status: "pending" | "processing" | "completed" | "cancelled"
+) {
+  return prisma.order.update({
+    where: { id },
+    data: { status }
+  });
+}
 /**
  * CREATE ORDER
  */
