@@ -1,13 +1,31 @@
 import type { Product } from "@/types/product";
+import Image from "next/image";
 
 export default function ProductGrid({ products }: { products: Product[] }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {products.map((p) => (
         <div key={p.id} className="border p-3 rounded">
-          <img src={p.images?.[0]} alt={p.name} />
-          <h3>{p.name}</h3>
-          <p>{p.price.toLocaleString()} đ</p>
+          {/* IMAGE */}
+          <div className="relative w-full aspect-square">
+            <Image
+              src={p.images?.[0] || "/placeholder.jpg"}
+              alt={p.name}
+              fill
+              className="object-cover rounded"
+              sizes="(max-width: 768px) 50vw, 25vw"
+            />
+          </div>
+
+          {/* NAME */}
+          <h3 className="mt-2 text-sm font-semibold line-clamp-2">
+            {p.name}
+          </h3>
+
+          {/* PRICE */}
+          <p className="text-sm text-gray-700">
+            {p.price.toLocaleString("vi-VN")} đ
+          </p>
         </div>
       ))}
     </div>
