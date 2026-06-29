@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function ProductGrid({ products }: { products: Product[] }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {products.map((p) => (
+      {products?.map((p) => (
         <div key={p.id} className="border p-3 rounded">
           {/* IMAGE */}
           <div className="relative w-full aspect-square">
