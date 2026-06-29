@@ -18,13 +18,16 @@ export default function CheckoutPage() {
   const [name, setName] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [address, setAddress] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   const total = calculateCartTotal(state.items);
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("vi-VN").format(price) + "₫";
 
-  function handleSubmit() {
+  async function handleSubmit() {
+    if (loading) return;
+
     if (!name || !phone || !address) {
       alert("Vui lòng nhập đầy đủ thông tin");
       return;
@@ -35,15 +38,39 @@ export default function CheckoutPage() {
       return;
     }
 
-    // MOCK ORDER SUBMIT (sau này thay API)
-    console.log("ORDER:", {
-      customer: { name, phone, address },
-      items: state.items,
-      total
-    });
+    setLoading(true);
 
-    clearCart();
-    router.push("/dat-hang-thanh-cong");
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          customer: {
+            name,
+            phone,
+            address
+          },
+          items: state.items,
+          total
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error("Order failed");
+      }
+
+      clearCart();
+      router.push("/dat-hang-thanh-cong");
+    } catch (err) {
+      alert("Đặt hàng thất bại, vui lòng thử lại");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -60,26 +87,30 @@ export default function CheckoutPage() {
               placeholder="Họ tên"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              disabled={loading}
             />
 
             <Input
               placeholder="Số điện thoại"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              disabled={loading}
             />
 
             <Input
               placeholder="Địa chỉ giao hàng"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
+              disabled={loading}
             />
 
             <Button
               className="w-full"
               size="lg"
               onClick={handleSubmit}
+              disabled={loading || state.items.length === 0}
             >
-              Xác nhận đặt hàng
+              {loading ? "Đang xử lý..." : "Xác nhận đặt hàng"}
             </Button>
           </div>
 
