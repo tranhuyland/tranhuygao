@@ -1,32 +1,56 @@
-import { db } from "./client";
+import { prisma } from "./prisma";
 import type { Order } from "@/lib/orders/order-types";
-import { generateOrderId } from "@/lib/orders/order-utils";
 
+/**
+ * CREATE ORDER
+ */
 export async function createOrderInDB(order: Order) {
-  await db.order.create({
-    id: order.id,
-    customer_name: order.customer.name,
-    customer_phone: order.customer.phone,
-    customer_address: order.customer.address,
-    total: order.total,
-    status: order.status,
-    created_at: order.createdAt
+  return prisma.order.create({
+    data: {
+      id: order.id,
+      customerName: order.customer.name,
+      customerPhone: order.customer.phone,
+      customerAddress: order.customer.address,
+      total: order.total,
+      status: order.status,
+
+      items: {
+        create: order.items.map((item) => ({
+          productId: item.product.id,
+          productName: item.product.name,
+          price:
+            item.product.salePrice &&
+            item.product.salePrice < item.product.price
+              ? item.product.salePrice
+              : item.product.price,
+          quantity: item.quantity
+        }))
+      }
+    },
+    include: {
+      items: true
+    }
   });
+}
 
-  await db.orderItem.createMany(
-    order.items.map((item) => ({
-      id: generateOrderId() + "-ITEM",
-      order_id: order.id,
-      product_id: item.product.id,
-      product_name: item.product.name,
-      price:
-        item.product.salePrice &&
-        item.product.salePrice < item.product.price
-          ? item.product.salePrice
-          : item.product.price,
-      quantity: item.quantity
-    }))
-  );
+/**
+ * GET ORDER BY ID
+ */
+export async function getOrderByIdFromDB(id: string) {
+  return prisma.order.findUnique({
+    where: { id },
+    include: { items: true }
+  });
+}
 
-  return order;
+/**
+ * GET ALL ORDERS
+ */
+export async function getOrdersFromDB() {
+  return prisma.order.findMany({
+    orderBy: {
+      createdAt: "desc"
+    },
+    include: { items: true }
+  });
 }
