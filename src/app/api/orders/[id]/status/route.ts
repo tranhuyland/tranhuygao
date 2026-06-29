@@ -6,7 +6,10 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { status } = await req.json();
+    const { id } = params;
+
+    const body = await req.json();
+    const { status } = body;
 
     if (!status) {
       return NextResponse.json(
@@ -15,13 +18,15 @@ export async function PATCH(
       );
     }
 
-    const updated = await updateOrderStatus(params.id, status);
+    const updated = await updateOrderStatus(id, status);
 
     return NextResponse.json({
       success: true,
       order: updated
     });
   } catch (err) {
+    console.error("PATCH /orders status error:", err);
+
     return NextResponse.json(
       { error: "Server error" },
       { status: 500 }
