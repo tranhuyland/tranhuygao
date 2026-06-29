@@ -8,57 +8,59 @@ datasource db {
 }
 
 model Product {
-  id              String   @id @default(cuid())
-  slug            String   @unique
-  name            String
-  sku             String
-  category        String
-  description     String
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  sku              String
+  category         String
+  description      String
   shortDescription String
-  images          String[]
-  price           Int
-  salePrice       Int?
-  stock           Int
-  featured        Boolean  @default(false)
-  unit            String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  images           String[]
+  price            Int
+  salePrice        Int?
+  stock            Int
+  featured         Boolean  @default(false)
+  unit             String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  orderItems      OrderItem[]
+  orderItems       OrderItem[]
 }
 
 model Order {
-  id        String   @id @default(cuid())
+  id              String   @id @default(cuid())
   customerName    String
   customerPhone   String
   customerAddress String
-  total     Int
-  status    String   @default("pending")
-  createdAt DateTime @default(now())
+  total           Int
+  status          String   @default("pending")
+  createdAt       DateTime @default(now())
 
-  items     OrderItem[]
+  items           OrderItem[]
+  payments        Payment[]   // ✅ FIX: thêm relation ngược
 }
 
 model OrderItem {
-  id        String   @id @default(cuid())
+  id         String @id @default(cuid())
 
-  orderId   String
-  productId String
+  orderId    String
+  productId  String
 
   productName String
-  price     Int
-  quantity  Int
+  price       Int
+  quantity    Int
 
-  order     Order   @relation(fields: [orderId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+  order      Order   @relation(fields: [orderId], references: [id])
+  product    Product @relation(fields: [productId], references: [id])
 }
-model Payment {
-  id        String   @id @default(cuid())
-  orderId   String
-  amount    Int
-  provider  String
-  status    String   @default("pending")
-  createdAt DateTime @default(now())
 
-  order     Order @relation(fields: [orderId], references: [id])
+model Payment {
+  id         String   @id @default(cuid())
+  orderId    String
+  amount     Int
+  provider    String
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+
+  order      Order @relation(fields: [orderId], references: [id])
 }
