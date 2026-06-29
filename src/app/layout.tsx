@@ -1,10 +1,7 @@
 import "./globals.css";
-import type { Viewport, Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
-import { defaultMetadata } from "@/config/site";
 import { CartProvider } from "@/lib/cart";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "GaoTranHuy - Gạo sạch cho mọi gia đình",
@@ -14,7 +11,7 @@ export const metadata: Metadata = {
     "gạo sạch",
     "gạo ST25",
     "gạo ngon",
-    "mua gạo online"
+    "mua gạo online",
   ],
   metadataBase: new URL("https://tranhuygao.vn"),
   openGraph: {
@@ -26,40 +23,40 @@ export const metadata: Metadata = {
       {
         url: "/og-image.jpg",
         width: 1200,
-        height: 630
-      }
+        height: 630,
+      },
     ],
     locale: "vi_VN",
-    type: "website"
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "GaoTranHuy",
     description: "Gạo sạch Việt Nam",
-    images: ["/og-image.jpg"]
-  }
+    images: ["/og-image.jpg"],
+  },
 };
 
 export const viewport: Viewport = {
   themeColor: "#ffffff",
   width: "device-width",
-  initialScale: 1
+  initialScale: 1,
 };
 
 export default function RootLayout({
-  children
-}: {
+  children,
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="vi" suppressHydrationWarning>
       <head>
-        {/* PERFORMANCE HINTS */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-
-        {/* nếu sau này dùng font Google */}
-        {/* <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" /> */}
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
       </head>
 
       <body className="min-h-screen bg-white text-gray-900 antialiased">
