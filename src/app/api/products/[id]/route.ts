@@ -1,30 +1,61 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   updateProduct,
-  deleteProduct
+  deleteProduct,
 } from "@/lib/db/product-repository";
 
 export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const body = await req.json();
+  try {
+    const { id } = await params;
+    const body = await req.json();
 
-  const product = await updateProduct(params.id, body);
+    const product = await updateProduct(id, body);
 
-  return NextResponse.json({
-    success: true,
-    product
-  });
+    return NextResponse.json({
+      success: true,
+      product,
+    });
+  } catch (error) {
+    console.error("PATCH /api/products/[id] error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Internal Server Error",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  await deleteProduct(params.id);
+  try {
+    const { id } = await params;
 
-  return NextResponse.json({
-    success: true
-  });
+    await deleteProduct(id);
+
+    return NextResponse.json({
+      success: true,
+    });
+  } catch (error) {
+    console.error("DELETE /api/products/[id] error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Internal Server Error",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
