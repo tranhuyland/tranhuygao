@@ -4,9 +4,19 @@ import { generateOrderId, formatOrderDate } from "./order-utils";
 import {
   createOrderInDB,
   getOrderByIdFromDB,
-  getOrdersFromDB
+  getOrdersFromDB,
+  updateOrderStatusInDB
 } from "@/lib/db/order-repository";
 
+/**
+ * UPDATE ORDER STATUS (service layer)
+ */
+export async function updateOrderStatus(
+  id: string,
+  status: "pending" | "processing" | "completed" | "cancelled"
+) {
+  return updateOrderStatusInDB(id, status);
+}
 /**
  * CREATE ORDER (service layer)
  * - business logic
