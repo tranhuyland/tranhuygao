@@ -1,30 +1,16 @@
-```ts
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   reactStrictMode: true,
-
   poweredByHeader: false,
-
   compress: true,
-
   trailingSlash: false,
-
   productionBrowserSourceMaps: false,
 
   experimental: {
-    optimizePackageImports: [
-      "lucide-react",
-      "framer-motion"
-    ]
+    optimizePackageImports: ["lucide-react", "framer-motion"]
   },
 
   images: {
-    formats: [
-      "image/avif",
-      "image/webp"
-    ],
-
+    formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 30,
 
     remotePatterns: [
@@ -70,5 +56,4 @@ const nextConfig: NextConfig = {
   }
 };
 
-export default nextConfig;
-```
+module.exports = nextConfig;
